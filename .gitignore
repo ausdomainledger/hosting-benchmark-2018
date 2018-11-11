@@ -1,0 +1,4 @@
+benchmark-suite/asic.csv
+benchmark-suite/wrk2
+*.log
+.vscode/

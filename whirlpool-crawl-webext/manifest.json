@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "whirlpool-crawl",
+  "version": "1.0",
+  "description": "Semi-mechanical crawling of Whirlpool forum posts.",
+  "content_scripts": [
+    {
+      "matches": ["https://forums.whirlpool.net.au/*"],
+      "js": ["collect-thread-ids.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": ["storage", "contextMenus", "activeTab", "tabs", "<all_urls>"],
+  "applications": {
+    "gecko": {
+      "id": "whirlpool-crawl@ausdomainledger.net"
+    }
+  }
+}

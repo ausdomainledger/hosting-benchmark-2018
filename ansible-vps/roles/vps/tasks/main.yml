@@ -1,0 +1,62 @@
+- name: Remount root as noatime (note, this won't persist a reboot)
+  shell: mount -o remount -o noatime / warn=false
+
+# - name: Set io scheduler (note, this won't persist a reboot)
+#   shell: bash -c "echo mq-deadline > /sys/block/*/queue/scheduler"
+
+- name: Add web user
+  user: name=web state=present
+
+- name: Add web dir
+  file: path=/var/www/html owner=web group=nginx mode=0750 state=directory
+
+- name: Install base packages
+  yum: name="{{ item }}" state=present
+  with_items:
+    - epel-release
+    - http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+    - yum-utils
+    - perf
+    - unzip
+  register: remi_updated
+
+- name: Install MariaDB repo
+  yum_repository: name=MariaDB baseurl=http://yum.mariadb.org/10.2/centos7-amd64 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB gpgcheck=yes description=MariaDB
+
+- name: Install nginx repo
+  yum_repository: name=nginx baseurl=http://nginx.org/packages/mainline/centos/7/$basearch/ gpgcheck=no description=nginx
+
+- name: Enable remi-php71
+  shell: yum-config-manager --enable remi-php71
+  when: remi_updated.changed
+
+- name: Install php and mariadb
+  yum: name="{{ item }}" state=present
+  with_items:
+    - php-fpm
+    - php-cli
+    - php-curl
+    - php-gd
+    - php-mysqlnd
+    - php-xmlrpc
+    - php-mcrypt
+    - php-opcache
+    - php-json
+    - MariaDB-server
+    - MariaDB-client
+    - nginx
+
+- name: Install service configurations
+  template: src="{{ item.src }}" dest="{{ item.dst }}" owner=root group=root mode=0640
+  with_items:
+    - { src: "nginx.conf", dst: "/etc/nginx/conf.d/default.conf" }
+    - { src: "mariadb.conf", dst: "/etc/my.cnf.d/tuning.conf" }
+    - { src: "php-fpm-pool.conf", dst: "/etc/php-fpm.d/www.conf" }
+    - { src: "php.ini", dst: "/etc/php.ini" }
+
+- name: Restart services
+  service: name="{{ item }}" enabled=yes state=restarted
+  with_items:
+    - php-fpm
+    - mariadb
+    - nginx
