@@ -4,7 +4,7 @@ set -euf -o pipefail
 
 # Download and build wrk2
 if [ ! -d "./wrk2" ]; then
-  git clone https://github.com/giltene/wrk2
+  git clone --depth=1 -b multi-ip https://github.com/ausdomainledger/wrk2.git
 fi
 if [ ! -f "./wrk2/wrk" ]; then
   pushd ./wrk2

@@ -1,0 +1,20 @@
+simple             0.018
+simplecall         0.006
+simpleucall        0.007
+simpleudcall       0.006
+mandel             0.053
+mandel2            0.147
+ackermann(7)       0.030
+ary(50000)         0.009
+ary2(50000)        0.006
+ary3(2000)         0.061
+fibo(30)           0.101
+hash1(50000)       0.020
+hash2(500)         0.014
+heapsort(20000)    0.040
+matrix(20)         0.045
+nestedloop(12)     0.049
+sieve(30)          0.015
+strcat(200000)     0.007
+------------------------
+Total              0.633

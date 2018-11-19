@@ -1,3 +1,3 @@
 module.exports = {
-  baseUrl: '/aushostingbenchmark2018/',
+  baseUrl: process.env.NODE_ENV === 'production' ? '/aushostingbenchmark2018/' : undefined,
 };

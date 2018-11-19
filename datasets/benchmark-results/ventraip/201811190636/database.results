@@ -1,0 +1,8 @@
+{
+    "database.php": {
+        "insert_duration": 33.60303497314453125,
+        "insert_rows": 500000,
+        "query_duration": 15.182361125946044921875,
+        "queries": 48
+    }
+}

@@ -272,8 +272,14 @@
       <p>It involves installing an entirely vanilla<a id="r4" href="#fn4">[4]</a>
         WordPress installation
         and performing a constant-rate, concurrent HTTP siege against it using wrk2, the
-        "coordinated-omission" fork of wrk. CO is a significant factor due to the way
-        that CloudLinux throttles and queues the execution of HTTP requests.
+        "coordinated-omission" fork of wrk. I have
+        <a href="https://github.com/ausdomainledger/wrk2/compare/master...ausdomainledger:multi-ip"
+        target="_blank" rel="noopener noreferrer">further forked wrk2 at the
+        ausdomainledger/wrk2 multi-ip branch</a> in order to round-robin requests between
+        IPv4 and IPv6 addresses, when available. The reason for this is that Zuver and
+        VentraIP have extremely aggressive CSF firewall rules configured, which causes
+        the 10/sec concurrency level to fail. Using multiple source IPs permits us to
+        evade the firewall.
       </p>
       <p>The aim of the benchmark is to record the latency percentiles for the site's
         transaction time at fixed concurrency levels (1/sec, 5/sec, 10/sec). These should

@@ -84,6 +84,10 @@ func main() {
 		}
 
 		path, suffix := filepath.Split(d)
+		if suffix[0] != '2' {
+			continue
+		}
+
 		provider := filepath.Base(path) + "-" + suffix
 
 		ranks = append(ranks, process(d, provider))
