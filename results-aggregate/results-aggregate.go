@@ -55,6 +55,8 @@ func (r *result) addTime(measureName string, d time.Duration) {
 
 	sort.Sort(v)
 
+	v.Median = v.R[len(v.R)/2]
+
 	r.Measurements[measureName] = v
 }
 
@@ -72,15 +74,19 @@ func (r *result) addCounter(measureName string, c uint64) {
 
 	sort.Sort(v)
 
+	v.Median = v.R[len(v.R)/2]
+
 	r.Measurements[measureName] = v
 }
 
 type timeMeasurement struct {
 	R      []time.Duration
+	Median time.Duration
 	Errors int
 }
 type counterMeasurement struct {
 	R      []uint64
+	Median uint64
 	Errors int
 }
 

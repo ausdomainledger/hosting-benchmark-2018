@@ -49,7 +49,7 @@
   },
   {
     "id": "netorigin",
-    "provider": "Net Origin",
+    "provider": "Netorigin",
     "name": "Elite",
     "cost": 1499
   }

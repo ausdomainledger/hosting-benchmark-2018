@@ -2,7 +2,7 @@
 <div id="app">
   <section class="main">
     <h1>Australian Shared Hosting Benchmark 2018</h1>
-    <p>Published 2018-11-12</p>
+    <p>Published and retracted 2018-11-11, re-published 2018-11-28</p>
 
     <section class="intro">
       <h2 id="introduction">Introduction</h2>
@@ -26,7 +26,8 @@
         every part of this benchmark is open source</a>,
         including the tools and raw data, so you can run any or all parts of it yourself.
       </p>
-      <p><strong>A caution:</strong> Remember, these results only reflect a few days of testing,
+      <p><strong>A caution:</strong> Remember, these results only reflect around a week
+      (~4 daily runs per provider) of testing,
       Providers update their services constantly, and all benchmarks in existence are flawed.
       Consider that when choosing how seriously to take these results in your decision-making.</p>
     </section>
@@ -81,12 +82,19 @@
       </p>
     </section>
     <section class="winner">
-      <h2 id="winner">Overall Winner: Net Virtue</h2>
-      <img src="./assets/netvirtue_logo.png" alt="Net Virtue">
-      <p>The overall winner is Net Virtue's "Business - Basic" cPanel service.
-         It maintained impressive and consistent website performance under load, despite being
-         middle-of-the-field for many of the microbenchmarks. Congratulations!
+      <h2 id="winner">Overall Winner: Netorigin</h2>
+      <img src="./assets/netorigin_logo.svg" alt="Net Virtue" style="height: 50px;">
+      <p>The overall winner is the Perth-based Netorigin's "Elite" cPanel service.
+         It performed outstandingly on all benchmarks, exceeding the VPS in a number of
+         cases.
          &#127881;
+      </p>
+      <h3>and on the eastern coast ...</h3>
+      <img src="./assets/ventraip_logo.svg" alt="VentraIP" style="height: 50px;">
+      <p>Since, as we all know, nobody lives in Perth, it wouldn't be fun unless we also
+        crowned an east-coast winner.
+        That glory belongs to VentraIP, who came close enough to Netorigin on the WP
+        Overall Score, that you could argue for a draw.
       </p>
     </section>
     <section class="results">
@@ -96,21 +104,33 @@
           <thead>
             <tr>
               <th @click="toggleResultsSort(p => p.plan.provider)">Provider</th>
-              <th style="min-width: 100px;" @click="toggleResultsSort(p => p.overall_score)">
+              <th style="min-width: 100px;"
+              @click="toggleResultsSort(p => wpOverall(p))">
                 WP Overall Score</th>
-              <th style="min-width: 100px;" @click="toggleResultsSort(p => p.results.wp_1_p90)">
+              <th style="min-width: 100px;"
+              @click="toggleResultsSort(p => p.measurements.WP1P90.Median)">
                 WP P90 1/sec</th>
-              <th style="min-width: 100px;" @click="toggleResultsSort(p => p.results.wp_5_p90)">
+              <th style="min-width: 100px;"
+              @click="toggleResultsSort(p => p.measurements.WP5P90.Median)">
                 WP P90 5/sec</th>
-              <th @click="toggleResultsSort(p => p.results.wp_10_p90)">WP P90 10/sec</th>
-              <th @click="toggleResultsSort(p => p.results.db_insert_duration)">DB Insert</th>
-              <th @click="toggleResultsSort(p => p.results.db_queries)">DB Queries</th>
-              <th @click="toggleResultsSort(p => p.results.cpu_ops)">Prime Sieve</th>
-              <th @click="toggleResultsSort(p => p.results.php1_duration)">PHP.net #1</th>
-              <th @click="toggleResultsSort(p => p.results.php2_duration)">PHP.net #2</th>
-              <th @click="toggleResultsSort(p => p.results.io_random_rw)">IO Random</th>
-              <th @click="toggleResultsSort(p => p.results.io_open_duration)">IO Open</th>
-              <th @click="toggleResultsSort(p => p.results.io_seq_write_duration)">
+              <th @click="toggleResultsSort(p => p.measurements.WP10P90.Median)">
+                WP P90 10/sec</th>
+              <th @click="toggleResultsSort(p => p.measurements.DBInsertDuration.Median)">
+                DB Insert</th>
+              <th @click="toggleResultsSort(p => p.measurements.DBQueries.Median)">
+                DB Queries</th>
+              <th @click="toggleResultsSort(p => p.measurements.CPUOps.Median)">
+                Prime Sieve</th>
+              <th @click="toggleResultsSort(p => p.measurements.PHP1Duration.Median)">
+                PHP.net #1</th>
+              <th @click="toggleResultsSort(p => p.measurements.PHP2Duration.Median)">
+                PHP.net #2</th>
+              <th @click="toggleResultsSort(p => p.measurements.IORandomRW.Median)">
+                IO Random</th>
+              <th @click="toggleResultsSort(p => p.measurements.IOOpenDuration.Median)">
+                IO Open</th>
+              <th @click="toggleResultsSort(p => p.measurements.IOSeqWrite.Median)">
+
                 IO Seq. Write</th>
             </tr>
           </thead>
@@ -126,87 +146,98 @@
               <td>
                 <span v-if="provider === baseline">100%</span>
                 <div v-else>
-                  {{ diff(provider.overall_score, baseline.overall_score) }}
+                  {{ diff(wpOverall(provider), wpOverall(baseline)) }}
                   overall
                 </div>
               </td>
               <td>
-                {{ (provider.results.wp_1_p90 / 1e6).toFixed(2) }}ms
+                {{ (provider.measurements.WP1P90.Median / 1e6).toFixed(2) }}ms
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.wp_1_p90, baseline.results.wp_1_p90) }}
+                  {{ diff(provider.measurements.WP1P90.Median,
+                  baseline.measurements.WP1P90.Median) }}
                 </small>
               </td>
               <td>
-                {{ (provider.results.wp_5_p90 / 1e6).toFixed(2) }}ms
+                {{ (provider.measurements.WP5P90.Median / 1e6).toFixed(2) }}ms
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.wp_5_p90, baseline.results.wp_5_p90) }}
+                  {{ diff(provider.measurements.WP5P90.Median,
+                  baseline.measurements.WP5P90.Median) }}
                 </small>
               </td>
               <td>
-                {{ (provider.results.wp_10_p90 / 1e6).toFixed(2) }}ms
+                {{ (provider.measurements.WP10P90.Median / 1e6).toFixed(2) }}ms
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.wp_10_p90, baseline.results.wp_10_p90) }}
+                  {{ diff(provider.measurements.WP10P90.Median,
+                  baseline.measurements.WP10P90.Median) }}
                 </small>
               </td>
               <td>
-                {{ ((provider.results.db_insert_duration / 1e6) / 1000).toFixed(2) }}s
+                {{ ((provider.measurements.DBInsertDuration.Median / 1e6) / 1000).toFixed(2) }}s
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.db_insert_duration,
-                  baseline.results.db_insert_duration) }}
+                  {{ diff(provider.measurements.DBInsertDuration.Median,
+                  baseline.measurements.DBInsertDuration.Median) }}
                 </small>
               </td>
               <td>
-                {{ provider.results.db_queries }}
+                {{ provider.measurements.DBQueries.Median }}
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(baseline.results.db_queries,
-                  provider.results.db_queries) }}
+                  {{ diff(baseline.measurements.DBQueries.Median,
+                  provider.measurements.DBQueries.Median) }}
                 </small>
               </td>
               <td>
-                {{ provider.results.cpu_ops }}
+                {{ provider.measurements.CPUOps.Median }}
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(baseline.results.cpu_ops,
-                  provider.results.cpu_ops) }}
+                  {{ diff(baseline.measurements.CPUOps.Median,
+                  provider.measurements.CPUOps.Median) }}
                 </small>
               </td>
               <td>
-                {{ (provider.results.php1_duration / 1e6).toFixed(2) }}ms
+                {{ (provider.measurements.PHP1Duration.Median / 1e6).toFixed(2) }}ms
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.php1_duration,
-                  baseline.results.php1_duration) }}
+                  {{ diff(provider.measurements.PHP1Duration.Median,
+                  baseline.measurements.PHP1Duration.Median) }}
                 </small>
               </td>
               <td>
-                {{ (provider.results.php2_duration / 1e6).toFixed(2) }}ms
+                {{ (provider.measurements.PHP2Duration.Median / 1e6).toFixed(2) }}ms
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.php2_duration,
-                  baseline.results.php2_duration) }}
+                  {{ diff(provider.measurements.PHP2Duration.Median,
+                  baseline.measurements.PHP2Duration.Median) }}
                 </small>
               </td>
               <td>
-                {{ provider.results.io_random_rw }}
+                {{ provider.measurements.IORandomRW.Median }}
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(baseline.results.io_random_rw,
-                  provider.results.io_random_rw) }}
+                  {{ diff(baseline.measurements.IORandomRW.Median,
+                  provider.measurements.IORandomRW.Median) }}
                 </small>
               </td>
               <td>
-                {{ (provider.results.io_open_duration / 1e6).toFixed(2) }}ms
+                {{ (provider.measurements.IOOpenDuration.Median / 1e6).toFixed(2) }}ms
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.io_open_duration,
-                  baseline.results.io_open_duration) }}
+                  {{ diff(provider.measurements.IOOpenDuration.Median,
+                  baseline.measurements.IOOpenDuration.Median) }}
                 </small>
               </td>
               <td>
-                {{ (provider.results.io_seq_write_duration / 1e6).toFixed(2) }}ms
+                {{ (provider.measurements.IOSeqWrite.Median / 1e6).toFixed(2) }}ms
                 <small style="display: block;" v-if="provider !== baseline">
-                  {{ diff(provider.results.io_seq_write_duration,
-                  baseline.results.io_seq_write_duration) }}
+                  {{ diff(provider.measurements.IOSeqWrite.Median,
+                  baseline.measurements.IOSeqWrite.Median) }}
                 </small>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <h3>Visualized (based on WP Overall Score)</h3>
+      <div class="barcharts">
+        <div v-for="p in sortedResults" v-bind:key="p.provider" class="provider">
+          <div class="bar" :style="'width:'
+          + ((wpOverall(baseline) / wpOverall(p)) * 100) + '%;'"></div>
+          <div class="name" v-if="p != baseline">{{ p.plan.provider }}</div>
+        </div>
       </div>
     </section>
     <section class="methodology">
@@ -262,9 +293,8 @@
         to an optimum (though not necessarily <em>the</em> optimum
         <a id="r6" href="#fn6">[6]</a>).
       </p>
-      <p>Each benchmark is also repeated 3 times across a time interval, in order to account
-        for transient "noisy neighbor" effects, and the <em>median</em> result
-        (measured by the WordPress benchmark) is taken.
+      <p>Each benchmark is also repeated 25-30 across a week time interval, in order to account
+        for transient "noisy neighbor" effects.
       </p>
       <p>The pure PHP benchmarks are described below.</p>
       <h4>1. WordPress</h4>
@@ -341,14 +371,15 @@
         problematic. I haven't proven that the measured differences did not occur
         purely by chance.
       </p>
-      <p>By running the benchmark suites 3 times across different days and
+      <p>By running the benchmark suites 25-30 times across different days and
         for significant durations, I have tried to provide an accurate basis for
         comparison, but my good feeling about it is purely intuitive rather than
         benefiting from rigorous stats analysis.
       </p>
       <h4>Ranking the Results</h4>
       <p>
-        For the overall rankings, the unweighted sum of the WordPress P90 latencies is used.
+        For the overall rankings, the sum of the median of each of 1/sec, 5/sec and 10/sec
+        P90s is taken.
       </p>
       <p>
         It might be surprising to ignore the other measurements entirely,
@@ -381,7 +412,9 @@
         my personal funds.
       </p>
       <p>Services were used only for the purpose of this benchmark, and
-        then cancelled.
+        then cancelled. I received an automatic refund from VentraIP &amp;
+        Zuver at cancellation time, apparently in accordance with their
+        45 day money-back guarantee.
       </p>
       <p>Feedback can be provided by &#128231; to _&lt;at&gt;ausdomainledger.net.
         I am happy to post factual corrections or highlight mistakes and flaws. However,
@@ -443,15 +476,24 @@
 <script>
 import benchmarkResults from '@/results.json';
 
+const rankingFunctions = {
+  'wp-median': p => p.measurements.WP1P90.Median
+    + p.measurements.WP5P90.Median
+    + p.measurements.WP10P90.Median,
+};
+
 export default {
   name: 'app',
+  components: {
+  },
   data() {
     return {
       providerSortKey: p => p.plan.provider,
       providerSortAsc: true,
-      sortKey: p => p.overall_score,
+      sortKey: rankingFunctions['wp-median'],
       sortDir: true,
-      results: benchmarkResults,
+      results: Object.values(benchmarkResults),
+      wpOverall: rankingFunctions['wp-median'],
     };
   },
   created() {
@@ -486,7 +528,7 @@ export default {
   },
   computed: {
     baseline() {
-      return benchmarkResults[0];
+      return this.results[0];
     },
     sortedResults() {
       return this.results.slice().sort((a, b) => {
@@ -613,6 +655,31 @@ span[title] {
   padding: 1em;
   h2 {
     border-bottom: 1px dotted white;
+  }
+}
+.barcharts {
+  margin-top: 1rem;
+  .provider {
+    &:nth-child(1) {
+      .bar {
+        background: #2c3e50;
+        padding-right: 1rem;
+        text-align: right;
+        &::after {
+          content: "VPS Benchmark";
+          color: white;
+        }
+      }
+    }
+    margin-bottom: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    .bar {
+      background: lighten(#2c3e50, 50%);
+    }
+    .name {
+      margin-left: 1rem;
+    }
   }
 }
 </style>
