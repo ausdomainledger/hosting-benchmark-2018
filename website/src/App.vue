@@ -233,7 +233,7 @@
       </div>
       <h3>Visualized (based on WP Overall Score)</h3>
       <div class="barcharts">
-        <div v-for="p in sortedResults" v-bind:key="p.provider" class="provider">
+        <div v-for="p in sortedResultsStatic" v-bind:key="p.provider" class="provider">
           <div class="bar" :style="'width:'
           + ((wpOverall(baseline) / wpOverall(p)) * 100) + '%;'"></div>
           <div class="name" v-if="p != baseline">{{ p.plan.provider }}</div>
@@ -494,9 +494,11 @@ export default {
       sortDir: true,
       results: Object.values(benchmarkResults),
       wpOverall: rankingFunctions['wp-median'],
+      sortedResultsStatic: null,
     };
   },
   created() {
+    this.sortedResultsStatic = this.sortedResults.slice();
   },
   methods: {
     toggleProviderSort(accessorFn) {
