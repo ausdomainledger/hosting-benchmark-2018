@@ -1,0 +1,8 @@
+{
+    "micro_io.php": {
+        "open_duration": 0.092346668243408203125,
+        "seq_write_duration": 0.1497039794921875,
+        "random_rw_duration": 15.0000140666961669921875,
+        "random_rw_count": 381796
+    }
+}

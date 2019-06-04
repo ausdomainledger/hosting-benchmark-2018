@@ -52,5 +52,11 @@
     "provider": "Netorigin",
     "name": "Elite",
     "cost": 1499
+  },
+  {
+    "id": "netvirtue-2019",
+    "provider": "Net Virtue (2019)",
+    "name": "N/A",
+    "cost": 0
   }
 ]
